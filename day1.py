@@ -28,6 +28,28 @@ def solve():
     
     return ans
 
+def solve2():
+    ans = 0
+    start = 50
+
+    with open("input.txt", "r") as file:
+        for line in file:
+            direction, rotation = line[0], int(line[1:])
+            hits = 0
+            if direction == 'L':
+                hits = max(0, (rotation-start+99)//100)
+                start = (start - rotation)%100
+            elif direction == 'R':
+                hits = max(0, (start + rotation)//100)
+                start = (start + rotation)%100
+            else:
+                pass
+            
+            ans += hits
+            continue
+    return ans
+
 if __name__=="__main__":
-    password = solve()
+    # password = solve()
+    password = solve2()
     print(password)
