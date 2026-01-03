@@ -43,7 +43,7 @@ class RollingList(list):
             self.pop(0)  # remove oldest
         super().append(item)
 
-def process_window(windows):
+def process_window(windows, write_output:bool):
     dir = [
         (-1, 1), (-1, 0), (-1, -1), 
         (0, -1),          (0, 1),
@@ -59,6 +59,8 @@ def process_window(windows):
     curr = windows[1]
     C = len(curr)
 
+    output = curr
+
     for c in range(C):
         if (windows[r][c]=='@'):
             roll_acess_count = 0
@@ -70,10 +72,16 @@ def process_window(windows):
                     roll_acess_count += 1
 
             if roll_acess_count<4:
+                output = output[:c] + "x" + output[c+1:]
                 ans += 1
+    
+    if write_output:
+        with open("input_temp.txt", "a") as f:
+            f.write(output+'\n')
+
     return ans
 
-def solve2():
+def solve2(write_output:bool):
     # process in max windows of size 3
     ans = 0
 
@@ -91,16 +99,46 @@ def solve2():
             windows.append(line.strip())
 
             if len(windows)==3:
-                ans += process_window(windows)
+                ans += process_window(windows, write_output)
 
         windows.append('.'*C)
-        ans += process_window(windows)
+        ans += process_window(windows, write_output)
 
     return ans
 
+def solve3():
+    ans = 0
+
+    while True:
+        # clear input file
+        open("input.txt", "w").close()
+
+        # copy input from temp file
+        with open("input_temp.txt", "r") as src, open("input.txt", "w") as dst:
+            for line in src:
+                dst.write(line)
+        
+        # clear temp file
+        open("input_temp.txt", "w").close()
+
+        curr = solve2(True)
+        ans += curr
+
+        if curr==0:
+            break
+    
+    return ans
+
+
 if __name__=="__main__":
+    # brute force
     # max_paper_rolls = solve()
-    max_paper_rolls = solve2()
+
+    # window optimized
+    # max_paper_rolls = solve2()
+    
+    # for part 2
+    max_paper_rolls = solve3()
     print(max_paper_rolls)
     
 
