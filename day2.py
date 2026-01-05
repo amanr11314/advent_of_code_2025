@@ -25,11 +25,51 @@ def solve():
                         if isinvaid_number_in_range(num, int(l), int(r)):
                             # invalid_ids.append(num)
                             ans = ans + num
+    return ans
+
+def solve2():
+    ans = 0
+    with open("input.txt", "r") as file:
+        for line in file:
+            for input_range in line.split(','):
+                seen = set()
+                l, r = input_range.split("-")
+
+                # generate all invalid numbers in range [l,r]
+                # generate numbers with digits upto [1, no_of_diigts(r)]
+                # then concatenante the generated number to form a repeating sequence
+                # just check if thhis generated number sequence lies in range [l,r] => invalid_id
+
+                max_n = len(r)
+                l, r = int(l), int(r)
+                for n_digit in range(1, max_n//2 + 1):
+                    start = 10**(n_digit-1)
+                    end = 10**n_digit
+
+                    # generate n_digit numbers between start-end
+                    for rep_num in range(start, end+1):
+                        block_str = str(rep_num)
+
+                        # repeat block atleast 2 times
+                        for k in range(2, max_n//n_digit + 1):
+                            num_str = block_str*k
+
+                            if len(num_str)>max_n:
+                                break
+
+                            num = int(num_str)
+                            if num>r:
+                                break
+
+                            if isinvaid_number_in_range(num,l, r) and num not in seen:
+                                seen.add(num)
+                                ans += num
 
     return ans
 
 if __name__=="__main__":
-    invalid_ids_sum = solve()
+    # invalid_ids_sum = solve()
+    invalid_ids_sum = solve2()
     print(invalid_ids_sum)
     
 
